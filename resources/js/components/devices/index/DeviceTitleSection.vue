@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Download, FileUp, Plus } from 'lucide-vue-next';
-import Button from '../ui/button/Button.vue';
+import { Link } from '@inertiajs/vue3';
+import { buttonVariants } from '../../ui/button';
+import Button from '@/components/ui/button/Button.vue';
 
 </script>
 
@@ -12,12 +14,12 @@ import Button from '../ui/button/Button.vue';
             </h1>
         </div>
         <div class="space-x-2">
-            <Button>
-                <span>
-                    <Plus />
-                </span>
-                Add new device
-            </Button>
+            <Link :href="route('devices.create')" :class="buttonVariants({ variant: 'default' })">
+            <span>
+                <Plus />
+            </span>
+            Add new device
+            </Link>
             <Button>
                 <span>
                     <FileUp />

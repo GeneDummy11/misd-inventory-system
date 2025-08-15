@@ -2,9 +2,9 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
-import DeviceTitleSection from '@/components/devices/DeviceTitleSection.vue';
-import DeviceFilterSection from '@/components/devices/DeviceFilterSection.vue';
-import DeviceTableSection from '@/components/devices/DeviceTableSection.vue';
+import DeviceTitleSection from '@/components/devices/index/DeviceTitleSection.vue';
+import DeviceFilterSection from '@/components/devices/index/DeviceFilterSection.vue';
+import DeviceTableSection from '@/components/devices/index/DeviceTableSection.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {

@@ -11,4 +11,9 @@ class DeviceController extends Controller
     {
         return Inertia::render('devices/Index');
     }
+
+    public function create()
+    {
+        return Inertia::render('devices/Create');
+    }
 }
