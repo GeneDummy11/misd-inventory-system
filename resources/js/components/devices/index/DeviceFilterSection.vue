@@ -1,13 +1,47 @@
 <script setup lang="ts">
-import { ListFilter } from 'lucide-vue-next';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Arrangement, DeviceType, Status } from '@/types/devices/device_interface';
+import { ListFilter, RefreshCcw } from 'lucide-vue-next';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Arrangement, DeviceFilters, DeviceType, Status } from '@/types/devices/device_interface';
+import { ref, watch } from 'vue';
+import { router } from '@inertiajs/vue3';
+import Button from '@/components/ui/button/Button.vue';
 
 const props = defineProps<{
     device_types: DeviceType[];
     arrangements: Arrangement[];
     statuses: Status[];
+    filters?: DeviceFilters;
 }>();
+
+const selectedDeviceType = ref<string | null>(props.filters?.device_type_id ?? null);
+const selectedArrangement = ref<string | null>(props.filters?.arrangement_id ?? null);
+const selectedStatus = ref<string | null>(props.filters?.status_id ?? null);
+
+watch([selectedDeviceType, selectedStatus, selectedArrangement], () => {
+    router.get('/devices', {
+        device_type_id: selectedDeviceType.value,
+        status_id: selectedStatus.value,
+        arrangement_id: selectedArrangement.value,
+    }, {
+        preserveState: true,
+        replace: true,
+    });
+});
+
+function resetFilter() {
+    selectedDeviceType.value = null;
+    selectedArrangement.value = null;
+    selectedStatus.value = null;
+
+    router.get('/devices', {
+        device_type_id: selectedDeviceType.value,
+        status_id: selectedStatus.value,
+        arrangement_id: selectedArrangement.value,
+    }, {
+        preserveState: true,
+        replace: true,
+    });
+}
 
 </script>
 
@@ -18,7 +52,7 @@ const props = defineProps<{
                 <ListFilter />
             </span>
             <div>
-                <Select>
+                <Select v-model="selectedDeviceType">
                     <SelectTrigger class="w-[150px]">
                         <SelectValue placeholder="Device Type" />
                     </SelectTrigger>
@@ -33,7 +67,7 @@ const props = defineProps<{
                 </Select>
             </div>
             <div>
-                <Select>
+                <Select v-model="selectedStatus">
                     <SelectTrigger class="w-[150px]">
                         <SelectValue placeholder="Status" />
                     </SelectTrigger>
@@ -47,7 +81,7 @@ const props = defineProps<{
                 </Select>
             </div>
             <div>
-                <Select>
+                <Select v-model="selectedArrangement">
                     <SelectTrigger class="w-[150px]">
                         <SelectValue placeholder="Arrangement" />
                     </SelectTrigger>
@@ -60,6 +94,14 @@ const props = defineProps<{
                         </SelectGroup>
                     </SelectContent>
                 </Select>
+            </div>
+            <div>
+                <Button variant="outline" class="w-[120px]" @click="resetFilter()">
+                    <span>
+                        <RefreshCcw />
+                    </span>
+                    Reset Filter
+                </Button>
             </div>
         </div>
         <div class="flex items-center space-x-2">

@@ -72,3 +72,9 @@ export interface PaginatedItemsResponse {
     per_page: number;
     links: PaginationLink[];
 }
+
+export interface DeviceFilters {
+    device_type_id?: string;
+    arrangement_id?: string;
+    status_id?: string;
+}
