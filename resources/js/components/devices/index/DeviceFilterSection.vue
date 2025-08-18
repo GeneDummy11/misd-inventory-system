@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import { ListFilter } from 'lucide-vue-next';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Arrangement, DeviceType, Status } from '@/types/devices/device_interface';
+
+const props = defineProps<{
+    device_types: DeviceType[];
+    arrangements: Arrangement[];
+    statuses: Status[];
+}>();
+
 </script>
 
 <template>
@@ -11,14 +19,14 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
             </span>
             <div>
                 <Select>
-                    <SelectTrigger>
-                        <SelectValue placeholder="Select a fruit" />
+                    <SelectTrigger class="w-[150px]">
+                        <SelectValue placeholder="Device Type" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
-                            <SelectLabel>Fruits</SelectLabel>
-                            <SelectItem value="apple">
-                                Apple
+                            <SelectItem v-for="device_type in device_types" :key="device_type.id"
+                                :value="device_type.id">
+                                {{ device_type.device_type_name }}
                             </SelectItem>
                         </SelectGroup>
                     </SelectContent>
@@ -26,14 +34,13 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
             </div>
             <div>
                 <Select>
-                    <SelectTrigger>
-                        <SelectValue placeholder="Select a fruit" />
+                    <SelectTrigger class="w-[150px]">
+                        <SelectValue placeholder="Status" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
-                            <SelectLabel>Fruits</SelectLabel>
-                            <SelectItem value="apple">
-                                Apple
+                            <SelectItem v-for="status in statuses" :key="status.id" :value="status.id">
+                                {{ status.status_name }}
                             </SelectItem>
                         </SelectGroup>
                     </SelectContent>
@@ -41,44 +48,14 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
             </div>
             <div>
                 <Select>
-                    <SelectTrigger>
-                        <SelectValue placeholder="Select a fruit" />
+                    <SelectTrigger class="w-[150px]">
+                        <SelectValue placeholder="Arrangement" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
-                            <SelectLabel>Fruits</SelectLabel>
-                            <SelectItem value="apple">
-                                Apple
-                            </SelectItem>
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
-            </div>
-            <div>
-                <Select>
-                    <SelectTrigger>
-                        <SelectValue placeholder="Select a fruit" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                            <SelectLabel>Fruits</SelectLabel>
-                            <SelectItem value="apple">
-                                Apple
-                            </SelectItem>
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
-            </div>
-            <div>
-                <Select>
-                    <SelectTrigger>
-                        <SelectValue placeholder="Select a fruit" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                            <SelectLabel>Fruits</SelectLabel>
-                            <SelectItem value="apple">
-                                Apple
+                            <SelectItem v-for="arrangement in arrangements" :key="arrangement.id"
+                                :value="arrangement.id">
+                                {{ arrangement.arrangement_name }}
                             </SelectItem>
                         </SelectGroup>
                     </SelectContent>

@@ -13,6 +13,11 @@ class EndUser extends Model
         'end_user_name',
     ];
 
+    public function device()
+    {
+        return $this->hasMany(Device::class);
+    }
+
     public function service()
     {
         return $this->belongsTo(Service::class);

@@ -27,9 +27,9 @@ class Device extends Model
         'arrangement_id'
     ];
 
-    public function user()
+    public function end_user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(EndUser::class);
     }
 
     public function device_type()
