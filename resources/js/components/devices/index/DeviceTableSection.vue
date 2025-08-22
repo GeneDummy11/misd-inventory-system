@@ -40,25 +40,25 @@ const props = defineProps<{
                     <TableCell>{{ device.status.status_name }}</TableCell>
                     <TableCell class="text-center">
                         <div class="flex justify-center items-center space-x-2">
-                            <Button class="w-[100px]">
+                            <Button class="w-[85px] text-xs">
                                 <span>
                                     <HandHelping />
                                 </span>
                                 Deploy
                             </Button>
-                            <Button variant="outline" class="w-[100px]">
+                            <Button variant="outline" class="w-[85px] text-xs">
                                 <span>
                                     <Eye />
                                 </span>
                                 Show
                             </Button>
-                            <Button variant="outline" class="w-[100px]">
+                            <Button variant="outline" class="w-[85px] text-xs">
                                 <span>
                                     <Pencil />
                                 </span>
                                 Edit
                             </Button>
-                            <Button variant="destructive" class="w-[100px]">
+                            <Button variant="destructive" class="w-[85px] text-xs">
                                 <span>
                                     <Trash2 />
                                 </span>

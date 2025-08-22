@@ -10,6 +10,15 @@ import Input from '@/components/ui/input/Input.vue';
 import InputError from '@/components/InputError.vue';
 import Textarea from '@/components/ui/textarea/Textarea.vue';
 import Button from '@/components/ui/button/Button.vue';
+import { type EndUser, Status, DeviceType, Arrangement, Supplier } from '@/types/devices/device_interface';
+
+const props = defineProps<{
+    device_types: DeviceType[];
+    statuses: Status[];
+    arrangements: Arrangement[];
+    suppliers: Supplier[];
+    end_users: EndUser[];
+}>();
 
 const form = useForm({
     device_name: '',
@@ -59,8 +68,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <h1 class="text-lg font-semibold mb-5">Device details</h1>
                         <form class="space-y-6" @submit.prevent="handleSubmit">
                             <div class="grid w-full gap-2">
-                                <Label for="device_name">Device Name</Label>
-                                <Input id="device_name" v-model="form.device_name" type="text" />
+                                <Label for="device_name">Device name</Label>
+                                <Input id="device_name" v-model="form.device_name" type="text" placeholder="Device name"
+                                    required />
                                 <InputError :message="form.errors.device_name" class="mt-2" />
                             </div>
 
@@ -69,13 +79,13 @@ const breadcrumbs: BreadcrumbItem[] = [
                                     <Label for="device_type_id">Type</Label>
                                     <Select>
                                         <SelectTrigger class="w-full">
-                                            <SelectValue placeholder="Select a fruit" />
+                                            <SelectValue placeholder="Select device type" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectGroup>
-                                                <SelectLabel>Fruits</SelectLabel>
-                                                <SelectItem value="apple">
-                                                    Apple
+                                                <SelectItem v-for="device_type in device_types" :key="device_type.id"
+                                                    :value="device_type.id">
+                                                    {{ device_type.device_type_name }}
                                                 </SelectItem>
                                             </SelectGroup>
                                         </SelectContent>
@@ -87,13 +97,13 @@ const breadcrumbs: BreadcrumbItem[] = [
                                     <Label for="status_id">Status</Label>
                                     <Select>
                                         <SelectTrigger class="w-full">
-                                            <SelectValue placeholder="Select a fruit" />
+                                            <SelectValue placeholder="Select status" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectGroup>
-                                                <SelectLabel>Fruits</SelectLabel>
-                                                <SelectItem value="apple">
-                                                    Apple
+                                                <SelectItem v-for="status in statuses" :key="status.id"
+                                                    :value="status.id">
+                                                    {{ status.status_name }}
                                                 </SelectItem>
                                             </SelectGroup>
                                         </SelectContent>
@@ -103,14 +113,15 @@ const breadcrumbs: BreadcrumbItem[] = [
                             </div>
                             <div class="grid grid-cols-2 gap-6">
                                 <div class="grid w-full gap-2">
-                                    <Label for="device_serial_number">Serial Number</Label>
-                                    <Input id="device_serial_number" v-model="form.device_serial_number" type="text" />
+                                    <Label for="device_serial_number">Serial number</Label>
+                                    <Input id="device_serial_number" v-model="form.device_serial_number" type="text"
+                                        placeholder="Serial number" />
                                     <InputError :message="form.errors.device_serial_number" class="mt-2" />
                                 </div>
                                 <div class="grid w-full gap-2">
-                                    <Label for="device_property_number">Property Number</Label>
-                                    <Input id="device_property_number" v-model="form.device_property_number"
-                                        type="text" />
+                                    <Label for="device_property_number">Property number</Label>
+                                    <Input id="device_property_number" v-model="form.device_property_number" type="text"
+                                        placeholder="Property number" />
                                     <InputError :message="form.errors.device_property_number" class="mt-2" />
                                 </div>
                             </div>
@@ -119,11 +130,11 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 <div class="grid w-full gap-2">
                                     <Label for="device_aquisition_cost">Cost</Label>
                                     <Input id="device_aquisition_cost" v-model="form.device_aquisition_cost"
-                                        type="number" step="0.01" min="0" />
+                                        type="number" step="0.01" min="0" placeholder="Cost" />
                                     <InputError :message="form.errors.device_aquisition_cost" class="mt-2" />
                                 </div>
                                 <div class="grid w-full gap-2">
-                                    <Label for="device_delivery_date">Delivery Date</Label>
+                                    <Label for="device_delivery_date">Delivery date</Label>
                                     <Input id="device_delivery_date" v-model="form.device_delivery_date" type="date" />
                                     <InputError :message="form.errors.device_delivery_date" class="mt-2" />
                                 </div>
@@ -133,13 +144,13 @@ const breadcrumbs: BreadcrumbItem[] = [
                                     <Label for="supplier_id">Supplier</Label>
                                     <Select>
                                         <SelectTrigger class="w-full">
-                                            <SelectValue placeholder="Select a fruit" />
+                                            <SelectValue placeholder="Select supplier" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectGroup>
-                                                <SelectLabel>Fruits</SelectLabel>
-                                                <SelectItem value="apple">
-                                                    Apple
+                                                <SelectItem v-for="supplier in suppliers" :key="supplier.id"
+                                                    :value="supplier.id">
+                                                    {{ supplier.supplier_name }}
                                                 </SelectItem>
                                             </SelectGroup>
                                         </SelectContent>
@@ -147,19 +158,38 @@ const breadcrumbs: BreadcrumbItem[] = [
                                     <InputError :message="form.errors.supplier_id" class="mt-2" />
                                 </div>
                                 <div class="grid w-full gap-2">
-                                    <Label for="device_model">Model</Label>
-                                    <Input id="device_model" v-model="form.device_model" type="text" />
-                                    <InputError :message="form.errors.device_model" class="mt-2" />
+                                    <Label for="supplier_id">Arrangement</Label>
+                                    <Select>
+                                        <SelectTrigger class="w-full">
+                                            <SelectValue placeholder="Select arrangement" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectItem v-for="arrangement in arrangements" :key="arrangement.id"
+                                                    :value="arrangement.id">
+                                                    {{ arrangement.arrangement_name }}
+                                                </SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                    <InputError :message="form.errors.supplier_id" class="mt-2" />
                                 </div>
                             </div>
                             <div class="grid w-full gap-2">
+                                <Label for="device_model">Model</Label>
+                                <Input id="device_model" v-model="form.device_model" type="text" placeholder="Model"
+                                    required />
+                                <InputError :message="form.errors.device_model" class="mt-2" />
+                            </div>
+                            <div class="grid w-full gap-2">
                                 <Label for="device_description">Description</Label>
-                                <Textarea id="device_description" v-model="form.device_description" />
+                                <Textarea id="device_description" v-model="form.device_description"
+                                    placeholder="Description" />
                                 <InputError :message="form.errors.device_description" class="mt-2" />
                             </div>
                             <div class="grid w-full gap-2">
                                 <Label for="device_remarks">Remarks</Label>
-                                <Textarea id="device_remarks" v-model="form.device_remarks" />
+                                <Textarea id="device_remarks" v-model="form.device_remarks" placeholder="Remarks" />
                                 <InputError :message="form.errors.device_remarks" class="mt-2" />
                             </div>
                             <hr>
@@ -169,13 +199,13 @@ const breadcrumbs: BreadcrumbItem[] = [
                                     <Label for="user_id">End-user</Label>
                                     <Select>
                                         <SelectTrigger class="w-full">
-                                            <SelectValue placeholder="Select a fruit" />
+                                            <SelectValue placeholder="Select end-user" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectGroup>
-                                                <SelectLabel>Fruits</SelectLabel>
-                                                <SelectItem value="apple">
-                                                    Apple
+                                                <SelectItem v-for="end_user in end_users" :key="end_user.id"
+                                                    :value="end_user.id">
+                                                    {{ end_user.end_user_name }}
                                                 </SelectItem>
                                             </SelectGroup>
                                         </SelectContent>

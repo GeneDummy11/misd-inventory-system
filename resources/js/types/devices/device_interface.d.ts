@@ -57,6 +57,11 @@ export interface Status {
     status_name: string;
 }
 
+export interface Supplier {
+    id: number;
+    supplier_name: string;
+}
+
 export interface PaginationLink {
     url: string | null;
     label: string;

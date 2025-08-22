@@ -28,21 +28,36 @@ watch([selectedDeviceType, selectedStatus, selectedArrangement], () => {
     });
 });
 
-function resetFilter() {
-    selectedDeviceType.value = null;
-    selectedArrangement.value = null;
-    selectedStatus.value = null;
+const searchQuery = ref<string>('');
 
+watch(searchQuery, (newQuery) => {
     router.get('/devices', {
         device_type_id: selectedDeviceType.value,
         status_id: selectedStatus.value,
         arrangement_id: selectedArrangement.value,
+        search: newQuery,
+    }, {
+        preserveState: true,
+        replace: true,
+    });
+});
+
+function resetFilter() {
+    selectedDeviceType.value = null;
+    selectedArrangement.value = null;
+    selectedStatus.value = null;
+    searchQuery.value = '';
+
+    router.get('/devices', {
+        device_type_id: null,
+        status_id: null,
+        arrangement_id: null,
+        search: '',
     }, {
         preserveState: true,
         replace: true,
     });
 }
-
 </script>
 
 <template>
@@ -95,14 +110,6 @@ function resetFilter() {
                     </SelectContent>
                 </Select>
             </div>
-            <div>
-                <Button variant="outline" class="w-[120px]" @click="resetFilter()">
-                    <span>
-                        <RefreshCcw />
-                    </span>
-                    Reset Filter
-                </Button>
-            </div>
         </div>
         <div class="flex items-center space-x-2">
             <div
@@ -112,8 +119,16 @@ function resetFilter() {
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1110.5 3a7.5 7.5 0 016.15 13.65z" />
                 </svg>
-                <input type="search" placeholder="Search..."
+                <input type="search" v-model="searchQuery" placeholder="Search..."
                     class="w-full bg-transparent p-2 placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50" />
+            </div>
+            <div>
+                <Button variant="outline" class="w-[170px] text-xs" @click="resetFilter()">
+                    <span>
+                        <RefreshCcw />
+                    </span>
+                    Reset Search & Filters
+                </Button>
             </div>
         </div>
     </div>
