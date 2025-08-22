@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Devices\StoreDeviceRequest;
 use App\Models\Arrangement;
+use App\Models\Brand;
 use App\Models\Device;
 use App\Models\DeviceType;
 use App\Models\EndUser;
@@ -83,13 +85,40 @@ class DeviceController extends Controller
         $statuses = Status::orderBy('status_name')->get();
         $suppliers = Supplier::orderBy('supplier_name')->get();
         $end_users = EndUser::orderBy('end_user_name')->get();
+        $brands = Brand::orderBy('brand_name')->get();
 
         return Inertia::render('devices/Create', [
             'device_types' => $device_types,
             'arrangements' => $arrangements,
             'statuses' => $statuses,
             'suppliers' => $suppliers,
-            'end_users' => $end_users
+            'end_users' => $end_users,
+            'brands' => $brands
         ]);
+    }
+
+    public function store(StoreDeviceRequest $request)
+    {
+        Device::create([
+            'device_name' => $request->device_name,
+            'device_model' => $request->device_model,
+            'device_description' => $request->device_description,
+            'device_serial_number' => $request->device_serial_number,
+            'device_property_number' => $request->device_property_number,
+            'device_aquisition_cost' => $request->device_aquisition_cost,
+            'device_remarks' => $request->device_remarks,
+            'device_delivery_date' => $request->device_delivery_date,
+            'device_deployment_date' => $request->device_deployment,
+            'end_user_id' => $request->end_user_id,
+            'device_type_id' => $request->device_type_id,
+            'brand_id' => $request->brand_id,
+            'status_id' => $request->status_id,
+            'supplier_id' => $request->supplier_id,
+            'arrangement_id' => $request->arrangement_id,
+            'created_at' => now(),
+            'update_at' => now(),
+        ]);
+
+        return redirect()->route('devices.index')->with('success', 'Device created successfully.');
     }
 }

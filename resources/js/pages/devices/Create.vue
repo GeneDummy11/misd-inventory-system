@@ -10,7 +10,8 @@ import Input from '@/components/ui/input/Input.vue';
 import InputError from '@/components/InputError.vue';
 import Textarea from '@/components/ui/textarea/Textarea.vue';
 import Button from '@/components/ui/button/Button.vue';
-import { type EndUser, Status, DeviceType, Arrangement, Supplier } from '@/types/devices/device_interface';
+import { type EndUser, Status, DeviceType, Arrangement, Supplier, Brand } from '@/types/devices/device_interface';
+import { toast } from 'vue-sonner'
 
 const props = defineProps<{
     device_types: DeviceType[];
@@ -18,6 +19,7 @@ const props = defineProps<{
     arrangements: Arrangement[];
     suppliers: Supplier[];
     end_users: EndUser[];
+    brands: Brand[];
 }>();
 
 const form = useForm({
@@ -30,7 +32,7 @@ const form = useForm({
     device_aquisition_cost: '',
     device_remarks: '',
     device_deployment_date: '',
-    user_id: '',
+    end_user_id: '',
     device_type_id: '',
     brand_id: '',
     status_id: '',
@@ -39,6 +41,14 @@ const form = useForm({
 });
 
 const handleSubmit = () => {
+    form.post(route('devices.store'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            form.reset(),
+                toast.success('Device added successfully.')
+        },
+        onError: (errors) => console.error(errors),
+    });
 };
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -77,7 +87,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <div class="grid grid-cols-2 gap-6">
                                 <div class="grid w-full gap-2">
                                     <Label for="device_type_id">Type</Label>
-                                    <Select>
+                                    <Select v-model="form.device_type_id">
                                         <SelectTrigger class="w-full">
                                             <SelectValue placeholder="Select device type" />
                                         </SelectTrigger>
@@ -95,7 +105,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                                 <div class="grid w-full gap-2">
                                     <Label for="status_id">Status</Label>
-                                    <Select>
+                                    <Select v-model="form.status_id">
                                         <SelectTrigger class="w-full">
                                             <SelectValue placeholder="Select status" />
                                         </SelectTrigger>
@@ -142,7 +152,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <div class="grid grid-cols-2 gap-6">
                                 <div class="grid w-full gap-2">
                                     <Label for="supplier_id">Supplier</Label>
-                                    <Select>
+                                    <Select v-model="form.supplier_id">
                                         <SelectTrigger class="w-full">
                                             <SelectValue placeholder="Select supplier" />
                                         </SelectTrigger>
@@ -159,7 +169,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 </div>
                                 <div class="grid w-full gap-2">
                                     <Label for="supplier_id">Arrangement</Label>
-                                    <Select>
+                                    <Select v-model="form.arrangement_id">
                                         <SelectTrigger class="w-full">
                                             <SelectValue placeholder="Select arrangement" />
                                         </SelectTrigger>
@@ -175,11 +185,29 @@ const breadcrumbs: BreadcrumbItem[] = [
                                     <InputError :message="form.errors.supplier_id" class="mt-2" />
                                 </div>
                             </div>
-                            <div class="grid w-full gap-2">
-                                <Label for="device_model">Model</Label>
-                                <Input id="device_model" v-model="form.device_model" type="text" placeholder="Model"
-                                    required />
-                                <InputError :message="form.errors.device_model" class="mt-2" />
+                            <div class="grid grid-cols-2 gap-6">
+                                <div class="grid w-full gap-2">
+                                    <Label for="device_model">Model</Label>
+                                    <Input id="device_model" v-model="form.device_model" type="text" placeholder="Model"
+                                        required />
+                                    <InputError :message="form.errors.device_model" class="mt-2" />
+                                </div>
+                                <div class="grid w-full gap-2">
+                                    <Label for="supplier_id">Brand</Label>
+                                    <Select v-model="form.brand_id">
+                                        <SelectTrigger class="w-full">
+                                            <SelectValue placeholder="Select brand" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectItem v-for="brand in brands" :key="brand.id" :value="brand.id">
+                                                    {{ brand.brand_name }}
+                                                </SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                    <InputError :message="form.errors.brand_id" class="mt-2" />
+                                </div>
                             </div>
                             <div class="grid w-full gap-2">
                                 <Label for="device_description">Description</Label>
@@ -197,7 +225,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <div class="grid grid-cols-2 gap-6">
                                 <div class="grid w-full gap-2">
                                     <Label for="user_id">End-user</Label>
-                                    <Select>
+                                    <Select v-model="form.end_user_id">
                                         <SelectTrigger class="w-full">
                                             <SelectValue placeholder="Select end-user" />
                                         </SelectTrigger>
@@ -210,7 +238,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                             </SelectGroup>
                                         </SelectContent>
                                     </Select>
-                                    <InputError :message="form.errors.user_id" class="mt-2" />
+                                    <InputError :message="form.errors.end_user_id" class="mt-2" />
                                 </div>
 
                                 <div class="grid w-full gap-2">
@@ -226,8 +254,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                     class="w-[120px]">
                                 <span>Cancel</span>
                                 </Link>
-                                <Button variant="default" :disabled="form.processing" class="w-[120px]">Update
-                                    item</Button>
+                                <Button variant="default" :disabled="form.processing" class="w-[120px]">Save</Button>
                             </div>
                         </form>
                     </CardContent>

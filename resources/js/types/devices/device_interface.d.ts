@@ -62,6 +62,12 @@ export interface Supplier {
     supplier_name: string;
 }
 
+export interface Brand {
+    id: number;
+    brand_name: string;
+}
+
+
 export interface PaginationLink {
     url: string | null;
     label: string;

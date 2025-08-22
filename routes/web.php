@@ -27,6 +27,7 @@ Route::middleware(['auth'])->group(function () {
     // Devices routes
     Route::get('devices', [DeviceController::class, 'index'])->name('devices.index');
     Route::get('devices/create', [DeviceController::class, 'create'])->name('devices.create');
+    Route::post('devices/store', [DeviceController::class, 'store'])->name('devices.store');
 
     //Licenses routes
     Route::get('licenses', [LicenseController::class, 'index'])->name('licenses.index');
