@@ -5,7 +5,9 @@ import Button from '@/components/ui/button/Button.vue';
 import { PaginatedItemsResponse, Device } from '@/types/devices/device_interface';
 import { getWarrantyStatus } from '@/utils/warranty';
 import { type WarrantyStatus } from '@/utils/warranty';
+import { formatDate } from '@/utils/format_date';
 import { computed } from 'vue';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const props = defineProps<{
     devices: PaginatedItemsResponse;
@@ -37,7 +39,7 @@ const mappedDevices = computed<DeviceWithWarrantyStatus[]>(() =>
                     <TableHead>Property Number</TableHead>
                     <TableHead>Arrangement</TableHead>
                     <TableHead>End-User</TableHead>
-                    <TableHead>Warranty Status</TableHead>
+                    <TableHead>Warranty</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead class="text-center w[100px]">Action</TableHead>
                 </TableRow>
@@ -56,7 +58,14 @@ const mappedDevices = computed<DeviceWithWarrantyStatus[]>(() =>
                         'text-orange-600': device.warrantyStatus === 'Expiring Soon',
                         'text-green-600': device.warrantyStatus === 'Active'
                     }">
-                        {{ device.warrantyStatus }}
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger>{{ device.warrantyStatus }}</TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{{ formatDate(device.device_warranty_expiration_date) }}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
                     </TableCell>
                     <TableCell>{{ device.status.status_name }}</TableCell>
                     <TableCell class="text-center">
