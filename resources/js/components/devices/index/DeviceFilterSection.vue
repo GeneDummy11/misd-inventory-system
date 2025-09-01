@@ -16,17 +16,21 @@ const props = defineProps<{
 const selectedDeviceType = ref<string | null>(props.filters?.device_type_id ?? null);
 const selectedArrangement = ref<string | null>(props.filters?.arrangement_id ?? null);
 const selectedStatus = ref<string | null>(props.filters?.status_id ?? null);
+const selectedWarrantyStatus = ref<string | null>(props.filters?.warranty_status ?? null);
 
-watch([selectedDeviceType, selectedStatus, selectedArrangement], () => {
+
+watch([selectedDeviceType, selectedStatus, selectedArrangement, selectedWarrantyStatus], () => {
     router.get('/devices', {
         device_type_id: selectedDeviceType.value,
         status_id: selectedStatus.value,
         arrangement_id: selectedArrangement.value,
+        warranty_status: selectedWarrantyStatus.value,
     }, {
         preserveState: true,
         replace: true,
     });
 });
+
 
 const searchQuery = ref<string>('');
 
@@ -35,6 +39,7 @@ watch(searchQuery, (newQuery) => {
         device_type_id: selectedDeviceType.value,
         status_id: selectedStatus.value,
         arrangement_id: selectedArrangement.value,
+        warranty_status: selectedWarrantyStatus.value,
         search: newQuery,
     }, {
         preserveState: true,
@@ -46,18 +51,21 @@ function resetFilter() {
     selectedDeviceType.value = null;
     selectedArrangement.value = null;
     selectedStatus.value = null;
+    selectedWarrantyStatus.value = null;
     searchQuery.value = '';
 
     router.get('/devices', {
         device_type_id: null,
         status_id: null,
         arrangement_id: null,
+        warranty_status: null,
         search: '',
     }, {
         preserveState: true,
         replace: true,
     });
 }
+
 </script>
 
 <template>
@@ -106,6 +114,20 @@ function resetFilter() {
                                 :value="arrangement.id">
                                 {{ arrangement.arrangement_name }}
                             </SelectItem>
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
+            </div>
+            <div>
+                <Select v-model="selectedWarrantyStatus">
+                    <SelectTrigger class="w-[150px]">
+                        <SelectValue placeholder="Warranty" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                            <SelectItem value="Expired">Expired</SelectItem>
+                            <SelectItem value="Expiring Soon">Expiring Soon</SelectItem>
+                            <SelectItem value="Active">Active</SelectItem>
                         </SelectGroup>
                     </SelectContent>
                 </Select>

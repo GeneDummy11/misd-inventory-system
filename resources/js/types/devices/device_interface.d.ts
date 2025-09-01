@@ -9,6 +9,7 @@ export interface Device {
     device_aquisition_cost: number;
     device_remarks: Text;
     device_deployment_date: string;
+    device_warranty_expiration_date: string;
     end_user_id: number;
     status_id: number;
     end_user: {
@@ -88,4 +89,5 @@ export interface DeviceFilters {
     device_type_id?: string;
     arrangement_id?: string;
     status_id?: string;
+    warranty_status: string;
 }

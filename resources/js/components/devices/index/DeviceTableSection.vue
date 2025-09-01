@@ -2,11 +2,26 @@
 import { Eye, HandHelping, Pencil, Trash2 } from 'lucide-vue-next';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import Button from '@/components/ui/button/Button.vue';
-import { type PaginatedItemsResponse } from '@/types/devices/device_interface';
+import { PaginatedItemsResponse, Device } from '@/types/devices/device_interface';
+import { getWarrantyStatus } from '@/utils/warranty';
+import { type WarrantyStatus } from '@/utils/warranty';
+import { computed } from 'vue';
 
 const props = defineProps<{
     devices: PaginatedItemsResponse;
 }>();
+
+//Delcaration for warranty status process
+type DeviceWithWarrantyStatus = Device & {
+    warrantyStatus: WarrantyStatus
+}
+
+const mappedDevices = computed<DeviceWithWarrantyStatus[]>(() =>
+    props.devices.data.map(device => ({
+        ...device,
+        warrantyStatus: getWarrantyStatus(device.device_warranty_expiration_date)
+    }))
+)
 
 </script>
 
@@ -22,13 +37,13 @@ const props = defineProps<{
                     <TableHead>Property Number</TableHead>
                     <TableHead>Arrangement</TableHead>
                     <TableHead>End-User</TableHead>
-                    <TableHead>Warranty</TableHead>
+                    <TableHead>Warranty Status</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead class="text-center w[100px]">Action</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                <TableRow v-for="device in devices.data" :key="device.id">
+                <TableRow v-for="device in mappedDevices" :key="device.id" class="text-xs">
                     <TableCell>{{ device.id }}</TableCell>
                     <TableCell>{{ device.device_type.device_type_name }}</TableCell>
                     <TableCell>{{ device.device_name }}</TableCell>
@@ -36,7 +51,13 @@ const props = defineProps<{
                     <TableCell>{{ device.device_property_number }}</TableCell>
                     <TableCell>{{ device.arrangement.arrangement_name }}</TableCell>
                     <TableCell>{{ device.end_user.end_user_name }}</TableCell>
-                    <TableCell>FOR INPUT</TableCell>
+                    <TableCell :class="{
+                        'text-red-600': device.warrantyStatus === 'Expired',
+                        'text-orange-600': device.warrantyStatus === 'Expiring Soon',
+                        'text-green-600': device.warrantyStatus === 'Active'
+                    }">
+                        {{ device.warrantyStatus }}
+                    </TableCell>
                     <TableCell>{{ device.status.status_name }}</TableCell>
                     <TableCell class="text-center">
                         <div class="flex justify-center items-center space-x-2">

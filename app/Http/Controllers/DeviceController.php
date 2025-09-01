@@ -36,6 +36,20 @@ class DeviceController extends Controller
             $query->where('status_id', $request->status_id);
         }
 
+        if ($request->filled('warranty_status')) {
+            if ($request->warranty_status === 'Expired') {
+                $query->whereDate('device_warranty_expiration_date', '<', now());
+            }
+
+            if ($request->warranty_status === 'Expiring Soon') {
+                $query->whereBetween('device_warranty_expiration_date', [now(), now()->addDays(30)]);
+            }
+
+            if ($request->warranty_status === 'Active') {
+                $query->whereDate('device_warranty_expiration_date', '>', now()->addDays(30));
+            }
+        }
+
         if ($request->filled('search')) {
             $searchTerm = $request->search;
             $query->where(function ($q) use ($searchTerm) {
@@ -108,7 +122,8 @@ class DeviceController extends Controller
             'device_aquisition_cost' => $request->device_aquisition_cost,
             'device_remarks' => $request->device_remarks,
             'device_delivery_date' => $request->device_delivery_date,
-            'device_deployment_date' => $request->device_deployment,
+            'device_warranty_expiration_date' => $request->device_warranty_expiration_date,
+            'device_deployment_date' => $request->device_deployment_date,
             'end_user_id' => $request->end_user_id,
             'device_type_id' => $request->device_type_id,
             'brand_id' => $request->brand_id,

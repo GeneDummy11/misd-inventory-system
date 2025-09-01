@@ -30,6 +30,7 @@ class DeviceFactory extends Factory
             'device_serial_number' => fake()->unique()->word(),
             'device_property_number' => fake()->unique()->word(),
             'device_delivery_date' => fake()->dateTimeBetween('-1 years', 'now'),
+            'device_warranty_expiration_date' => fake()->dateTimeBetween('-2 years', 'now'),
             'device_aquisition_cost' => fake()->randomFloat(2, 1, 1000),
             'device_remarks' => fake()->sentence(),
             'device_deployment_date' => fake()->dateTimeBetween('-1 years', 'now'),

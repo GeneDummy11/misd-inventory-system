@@ -32,6 +32,7 @@ const form = useForm({
     device_aquisition_cost: '',
     device_remarks: '',
     device_deployment_date: '',
+    device_warranty_expiration_date: '',
     end_user_id: '',
     device_type_id: '',
     brand_id: '',
@@ -147,6 +148,15 @@ const breadcrumbs: BreadcrumbItem[] = [
                                     <Label for="device_delivery_date">Delivery date</Label>
                                     <Input id="device_delivery_date" v-model="form.device_delivery_date" type="date" />
                                     <InputError :message="form.errors.device_delivery_date" class="mt-2" />
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-6">
+                                <div class="grid w-full gap-2"></div>
+                                <div class="grid w-full gap-2">
+                                    <Label for="device_warranty_expiration_date">Warranty expiration date</Label>
+                                    <Input id="device_warranty_expiration_date"
+                                        v-model="form.device_warranty_expiration_date" type="date" />
+                                    <InputError :message="form.errors.device_warranty_expiration_date" class="mt-2" />
                                 </div>
                             </div>
                             <div class="grid grid-cols-2 gap-6">

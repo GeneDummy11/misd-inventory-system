@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('device_serial_number');
             $table->string('device_property_number');
             $table->date('device_delivery_date');
+            $table->date('device_warranty_expiration_date');
             $table->float('device_aquisition_cost');
             $table->text('device_remarks')->nullable();
             $table->date('device_deployment_date')->nullable();

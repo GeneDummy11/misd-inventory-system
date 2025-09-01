@@ -41,6 +41,7 @@ class StoreDeviceRequest extends FormRequest
             'device_aquisition_cost' => 'required|numeric|min:0',
             'device_remarks' => 'nullable|string|max:1000',
             'device_delivery_date' => 'required|date',
+            'device_warranty_expiration_date' => 'required|date',
             'device_deployment_date' => 'required|date',
             'end_user_id' => 'required|exists:end_users,id',
             'device_type_id' => 'required|exists:device_types,id',
