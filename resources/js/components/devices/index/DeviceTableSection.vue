@@ -3,11 +3,13 @@ import { Eye, HandHelping, Pencil, Trash2 } from 'lucide-vue-next';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import Button from '@/components/ui/button/Button.vue';
 import { PaginatedItemsResponse, Device } from '@/types/devices/device_interface';
-import { getWarrantyStatus } from '@/utils/warranty';
-import { type WarrantyStatus } from '@/utils/warranty';
+import { getWarrantyStatus } from '@/utils/format_warranty';
+import { type WarrantyStatus } from '@/utils/format_warranty';
 import { formatDate } from '@/utils/format_date';
 import { computed } from 'vue';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { buttonVariants } from '@/components/ui/button';
+import { Link } from '@inertiajs/vue3';
 
 const props = defineProps<{
     devices: PaginatedItemsResponse;
@@ -70,24 +72,33 @@ const mappedDevices = computed<DeviceWithWarrantyStatus[]>(() =>
                     <TableCell>{{ device.status.status_name }}</TableCell>
                     <TableCell class="text-center">
                         <div class="flex justify-center items-center space-x-2">
+                            <!-- Deploy Button -->
                             <Button class="w-[85px] text-xs">
                                 <span>
                                     <HandHelping />
                                 </span>
                                 Deploy
                             </Button>
-                            <Button variant="outline" class="w-[85px] text-xs">
-                                <span>
-                                    <Eye />
-                                </span>
-                                Show
-                            </Button>
-                            <Button variant="outline" class="w-[85px] text-xs">
-                                <span>
-                                    <Pencil />
-                                </span>
-                                Edit
-                            </Button>
+
+                            <!-- Show Button -->
+                            <Link :href="route('devices.show', { device: device })"
+                                :class="buttonVariants({ variant: 'outline' })" class="text-xs">
+                            <span>
+                                <Eye />
+                            </span>
+                            Show
+                            </Link>
+
+                            <!-- Edit Button -->
+                            <Link :href="route('devices.edit', { device: device })"
+                                :class="buttonVariants({ variant: 'outline' })" class="text-xs">
+                            <span>
+                                <Pencil />
+                            </span>
+                            Edit
+                            </Link>
+
+                            <!-- Delete Button -->
                             <Button variant="destructive" class="w-[85px] text-xs">
                                 <span>
                                     <Trash2 />

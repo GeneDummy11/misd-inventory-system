@@ -92,6 +92,11 @@ class DeviceController extends Controller
         ]);
     }
 
+    public function show(Device $device)
+    {
+        return Inertia::render('devices/Show');
+    }
+
     public function create()
     {
         $device_types = DeviceType::orderBy('device_type_name')->get();
@@ -135,5 +140,10 @@ class DeviceController extends Controller
         ]);
 
         return redirect()->route('devices.index')->with('success', 'Device created successfully.');
+    }
+
+    public function edit(Device $device)
+    {
+        return Inertia::render('devices/Edit');
     }
 }
