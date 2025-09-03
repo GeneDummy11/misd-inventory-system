@@ -8,7 +8,7 @@ import Label from '@/components/ui/label/Label.vue';
 import { Device } from '@/types/devices/device_interface';
 import { formatDate } from '@/utils/format_date';
 import { formatToPHP } from '@/utils/format_currency';
-import { ChevronLeft } from 'lucide-vue-next';
+import { ChevronLeft, Eye } from 'lucide-vue-next';
 
 const props = defineProps<{
     device: Device;
@@ -36,9 +36,16 @@ const breadcrumbs: BreadcrumbItem[] = [
             <div class="flex w-full max-w-4xl flex-col">
                 <Card>
                     <CardHeader>
-                        <CardTitle class="text-2xl font-bold">{{ device.device_name }}</CardTitle>
+                        <CardTitle>
+                            <div class="flex space-x-2 items-center">
+                                <Eye />
+                                <Label class="text-2xl font-bold">Show device</Label>
+                            </div>
+                        </CardTitle>
                     </CardHeader>
                     <CardContent>
+                        <h1 class="text-lg font-semibold mb-5">{{ device.device_name }}</h1>
+
                         <h1 class="text-lg font-semibold mb-5">Device details</h1>
 
                         <div class="grid grid-cols-3 gap-6 mb-2">

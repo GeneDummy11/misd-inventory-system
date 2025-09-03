@@ -13,7 +13,7 @@ import Button from '@/components/ui/button/Button.vue';
 import { type EndUser, Status, DeviceType, Arrangement, Supplier, Brand, Device } from '@/types/devices/device_interface';
 import { toast } from 'vue-sonner';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, } from '@/components/ui/alert-dialog';
-import { SaveAll, X } from 'lucide-vue-next';
+import { Pencil, SaveAll, X } from 'lucide-vue-next';
 
 const props = defineProps<{
     device: Device;
@@ -26,22 +26,22 @@ const props = defineProps<{
 }>();
 
 const form = useForm({
-    device_name: props.device.device_name,
-    device_model: props.device.device_model,
-    device_description: props.device.device_description,
-    device_serial_number: props.device.device_serial_number,
-    device_property_number: props.device.device_property_number,
-    device_delivery_date: props.device.device_delivery_date,
-    device_aquisition_cost: props.device.device_aquisition_cost,
-    device_remarks: props.device.device_remarks,
-    device_deployment_date: props.device.device_deployment_date,
-    device_warranty_expiration_date: props.device.device_warranty_expiration_date,
-    end_user_id: props.device.end_user.id,
-    device_type_id: props.device.device_type.id,
-    brand_id: props.device.brand.id,
-    status_id: props.device.status.id,
-    supplier_id: props.device.supplier.id,
-    arrangement_id: props.device.arrangement.id,
+    device_name: props.device?.device_name ?? '',
+    device_model: props.device?.device_model ?? '',
+    device_description: props.device?.device_description ?? '',
+    device_serial_number: props.device?.device_serial_number ?? '',
+    device_property_number: props.device?.device_property_number ?? '',
+    device_delivery_date: props.device?.device_delivery_date ?? '',
+    device_aquisition_cost: props.device?.device_aquisition_cost ?? '',
+    device_remarks: props.device?.device_remarks ?? '',
+    device_deployment_date: props.device?.device_deployment_date ?? '',
+    device_warranty_expiration_date: props.device?.device_warranty_expiration_date ?? '',
+    end_user_id: props.device?.end_user?.id ?? '',
+    device_type_id: props.device?.device_type?.id ?? '',
+    brand_id: props.device?.brand?.id ?? '',
+    status_id: props.device?.status?.id ?? '',
+    supplier_id: props.device?.supplier?.id ?? '',
+    arrangement_id: props.device?.arrangement?.id ?? '',
 });
 
 function updateDevice() {
@@ -76,11 +76,15 @@ const breadcrumbs: BreadcrumbItem[] = [
             <div class="flex w-full max-w-4xl flex-col">
                 <Card>
                     <CardHeader>
-                        <CardTitle class="text-2xl font-bold">Edit a device</CardTitle>
+                        <CardTitle>
+                            <div class="flex space-x-2 items-center">
+                                <Pencil />
+                                <Label class="text-2xl font-bold">Edit a device</Label>
+                            </div>
+                        </CardTitle>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent class="space-y-5">
                         <h1 class="text-lg font-semibold mb-5">Device details</h1>
-                        <!-- <form class="space-y-6" @submit.prevent="handleSubmit"> -->
                         <div class="grid w-full gap-2">
                             <Label for="device_name">Device name</Label>
                             <Input id="device_name" v-model="form.device_name" type="text" placeholder="Device name"
@@ -284,16 +288,28 @@ const breadcrumbs: BreadcrumbItem[] = [
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
-                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <AlertDialogAction @click="updateDevice()">
-                                            Continue
-                                        </AlertDialogAction>
-
+                                        <div class="flex justify-between w-full">
+                                            <div>
+                                                <AlertDialogCancel>
+                                                    <span>
+                                                        <X />
+                                                    </span>
+                                                    Cancel
+                                                </AlertDialogCancel>
+                                            </div>
+                                            <div>
+                                                <AlertDialogAction @click="updateDevice()">
+                                                    <span>
+                                                        <SaveAll />
+                                                    </span>
+                                                    Update
+                                                </AlertDialogAction>
+                                            </div>
+                                        </div>
                                     </AlertDialogFooter>
                                 </AlertDialogContent>
                             </AlertDialog>
                         </div>
-                        <!-- </form> -->
                     </CardContent>
                 </Card>
             </div>
