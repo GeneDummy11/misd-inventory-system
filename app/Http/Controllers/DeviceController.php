@@ -94,7 +94,9 @@ class DeviceController extends Controller
 
     public function show(Device $device)
     {
-        return Inertia::render('devices/Show');
+        return Inertia::render('devices/Show', [
+            'device' => $device->load(['end_user', 'device_type', 'brand', 'status', 'supplier', 'arrangement']),
+        ]);
     }
 
     public function create()
@@ -144,6 +146,8 @@ class DeviceController extends Controller
 
     public function edit(Device $device)
     {
-        return Inertia::render('devices/Edit');
+        return Inertia::render('devices/Edit', [
+            'device' => $device->load(['end_user', 'device_type', 'brand', 'status', 'supplier', 'arrangement']),
+        ]);
     }
 }
