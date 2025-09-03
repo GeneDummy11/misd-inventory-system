@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Devices\StoreDeviceRequest;
+use App\Http\Requests\Devices\UpdateDeviceRequest;
 use App\Models\Arrangement;
 use App\Models\Brand;
 use App\Models\Device;
@@ -146,8 +147,35 @@ class DeviceController extends Controller
 
     public function edit(Device $device)
     {
+        $device_types = DeviceType::orderBy('device_type_name')->get();
+        $arrangements = Arrangement::orderBy('arrangement_name')->get();
+        $statuses = Status::orderBy('status_name')->get();
+        $suppliers = Supplier::orderBy('supplier_name')->get();
+        $end_users = EndUser::orderBy('end_user_name')->get();
+        $brands = Brand::orderBy('brand_name')->get();
+
         return Inertia::render('devices/Edit', [
             'device' => $device->load(['end_user', 'device_type', 'brand', 'status', 'supplier', 'arrangement']),
+            'device_types' => $device_types,
+            'arrangements' => $arrangements,
+            'statuses' => $statuses,
+            'suppliers' => $suppliers,
+            'end_users' => $end_users,
+            'brands' => $brands
         ]);
+    }
+
+    public function update(UpdateDeviceRequest $request, Device $device)
+    {
+        $device->update($request->validated());
+
+        return redirect()->route('devices.index')->with('success', 'Device updated successfully.');
+    }
+
+    public function destroy(Device $device)
+    {
+        $device->delete();
+
+        return redirect()->route('devices.index')->with('success', 'Device deleted successfully.');
     }
 }

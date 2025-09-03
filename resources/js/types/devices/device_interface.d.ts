@@ -2,12 +2,12 @@ export interface Device {
     id: number;
     device_name: string;
     device_model: string;
-    device_description: Text;
+    device_description: string;
     device_serial_number: string;
     device_property_number: string;
     device_delivery_date: string;
     device_aquisition_cost: number;
-    device_remarks: Text;
+    device_remarks: string;
     device_deployment_date: string;
     device_warranty_expiration_date: string;
     end_user_id: number;

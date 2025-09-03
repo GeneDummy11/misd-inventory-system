@@ -9,7 +9,9 @@ import { formatDate } from '@/utils/format_date';
 import { computed } from 'vue';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { buttonVariants } from '@/components/ui/button';
-import { Link } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
+import { toast } from 'vue-sonner';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, } from '@/components/ui/alert-dialog';
 
 const props = defineProps<{
     devices: PaginatedItemsResponse;
@@ -26,6 +28,14 @@ const mappedDevices = computed<DeviceWithWarrantyStatus[]>(() =>
         warrantyStatus: getWarrantyStatus(device.device_warranty_expiration_date)
     }))
 )
+
+function deleteDevice(deviceId: number) {
+    router.delete(route('devices.destroy', { device: deviceId }), {
+        preserveScroll: true,
+        onSuccess: () => toast.success('Device deleted successfully.'),
+        onError: () => toast.error('Failed to delete device.'),
+    });
+};
 
 </script>
 
@@ -99,12 +109,34 @@ const mappedDevices = computed<DeviceWithWarrantyStatus[]>(() =>
                             </Link>
 
                             <!-- Delete Button -->
-                            <Button variant="destructive" class="w-[85px] text-xs">
-                                <span>
-                                    <Trash2 />
-                                </span>
-                                Delete
-                            </Button>
+                            <AlertDialog>
+                                <AlertDialogTrigger>
+                                    <Button variant="destructive" class="w-[85px] text-xs">
+                                        <span>
+                                            <Trash2 />
+                                        </span>
+                                        Delete
+                                    </Button>
+                                </AlertDialogTrigger>
+
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This action cannot be undone. This will permanently delete the
+                                            device and
+                                            remove its data.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction @click="deleteDevice(device.id)">
+                                            Continue
+                                        </AlertDialogAction>
+
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
                         </div>
                     </TableCell>
                 </TableRow>
