@@ -12,6 +12,7 @@ import Textarea from '@/components/ui/textarea/Textarea.vue';
 import Button from '@/components/ui/button/Button.vue';
 import { type EndUser, Status, DeviceType, Arrangement, Supplier, Brand } from '@/types/devices/device_interface';
 import { toast } from 'vue-sonner'
+import { SaveAll, X } from 'lucide-vue-next';
 
 const props = defineProps<{
     device_types: DeviceType[];
@@ -262,9 +263,13 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <div class="flex justify-between items-center">
                                 <Link :href="route('devices.index')" :class="buttonVariants({ variant: 'outline' })"
                                     class="w-[120px]">
+                                <X />
                                 <span>Cancel</span>
                                 </Link>
-                                <Button variant="default" :disabled="form.processing" class="w-[120px]">Save</Button>
+                                <Button variant="default" :disabled="form.processing" class="w-[120px]">
+                                    <SaveAll />
+                                    <span>Save</span>
+                                </Button>
                             </div>
                         </form>
                     </CardContent>

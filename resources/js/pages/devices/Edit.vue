@@ -12,6 +12,8 @@ import Textarea from '@/components/ui/textarea/Textarea.vue';
 import Button from '@/components/ui/button/Button.vue';
 import { type EndUser, Status, DeviceType, Arrangement, Supplier, Brand, Device } from '@/types/devices/device_interface';
 import { toast } from 'vue-sonner';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, } from '@/components/ui/alert-dialog';
+import { SaveAll, X } from 'lucide-vue-next';
 
 const props = defineProps<{
     device: Device;
@@ -42,7 +44,7 @@ const form = useForm({
     arrangement_id: props.device.arrangement.id,
 });
 
-const handleSubmit = () => {
+function updateDevice() {
     form.put(route('devices.update', props.device.id), {
         preserveScroll: true,
         onSuccess: () => {
@@ -78,196 +80,220 @@ const breadcrumbs: BreadcrumbItem[] = [
                     </CardHeader>
                     <CardContent>
                         <h1 class="text-lg font-semibold mb-5">Device details</h1>
-                        <form class="space-y-6" @submit.prevent="handleSubmit">
+                        <!-- <form class="space-y-6" @submit.prevent="handleSubmit"> -->
+                        <div class="grid w-full gap-2">
+                            <Label for="device_name">Device name</Label>
+                            <Input id="device_name" v-model="form.device_name" type="text" placeholder="Device name"
+                                required />
+                            <InputError :message="form.errors.device_name" class="mt-2" />
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-6">
                             <div class="grid w-full gap-2">
-                                <Label for="device_name">Device name</Label>
-                                <Input id="device_name" v-model="form.device_name" type="text" placeholder="Device name"
+                                <Label for="device_type_id">Type</Label>
+                                <Select v-model="form.device_type_id">
+                                    <SelectTrigger class="w-full">
+                                        <SelectValue placeholder="Select device type" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectItem v-for="device_type in device_types" :key="device_type.id"
+                                                :value="device_type.id">
+                                                {{ device_type.device_type_name }}
+                                            </SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                <InputError :message="form.errors.device_type_id" class="mt-2" />
+                            </div>
+
+                            <div class="grid w-full gap-2">
+                                <Label for="status_id">Status</Label>
+                                <Select v-model="form.status_id">
+                                    <SelectTrigger class="w-full">
+                                        <SelectValue placeholder="Select status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectItem v-for="status in statuses" :key="status.id" :value="status.id">
+                                                {{ status.status_name }}
+                                            </SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                <InputError :message="form.errors.status_id" class="mt-2" />
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="grid w-full gap-2">
+                                <Label for="device_serial_number">Serial number</Label>
+                                <Input id="device_serial_number" v-model="form.device_serial_number" type="text"
+                                    placeholder="Serial number" />
+                                <InputError :message="form.errors.device_serial_number" class="mt-2" />
+                            </div>
+                            <div class="grid w-full gap-2">
+                                <Label for="device_property_number">Property number</Label>
+                                <Input id="device_property_number" v-model="form.device_property_number" type="text"
+                                    placeholder="Property number" />
+                                <InputError :message="form.errors.device_property_number" class="mt-2" />
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="grid w-full gap-2">
+                                <Label for="device_aquisition_cost">Cost</Label>
+                                <Input id="device_aquisition_cost" v-model="form.device_aquisition_cost" type="number"
+                                    step="0.01" min="0" placeholder="Cost" />
+                                <InputError :message="form.errors.device_aquisition_cost" class="mt-2" />
+                            </div>
+                            <div class="grid w-full gap-2">
+                                <Label for="device_delivery_date">Delivery date</Label>
+                                <Input id="device_delivery_date" v-model="form.device_delivery_date" type="date" />
+                                <InputError :message="form.errors.device_delivery_date" class="mt-2" />
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="grid w-full gap-2"></div>
+                            <div class="grid w-full gap-2">
+                                <Label for="device_warranty_expiration_date">Warranty expiration date</Label>
+                                <Input id="device_warranty_expiration_date"
+                                    v-model="form.device_warranty_expiration_date" type="date" />
+                                <InputError :message="form.errors.device_warranty_expiration_date" class="mt-2" />
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="grid w-full gap-2">
+                                <Label for="supplier_id">Supplier</Label>
+                                <Select v-model="form.supplier_id">
+                                    <SelectTrigger class="w-full">
+                                        <SelectValue placeholder="Select supplier" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectItem v-for="supplier in suppliers" :key="supplier.id"
+                                                :value="supplier.id">
+                                                {{ supplier.supplier_name }}
+                                            </SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                <InputError :message="form.errors.supplier_id" class="mt-2" />
+                            </div>
+                            <div class="grid w-full gap-2">
+                                <Label for="supplier_id">Arrangement</Label>
+                                <Select v-model="form.arrangement_id">
+                                    <SelectTrigger class="w-full">
+                                        <SelectValue placeholder="Select arrangement" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectItem v-for="arrangement in arrangements" :key="arrangement.id"
+                                                :value="arrangement.id">
+                                                {{ arrangement.arrangement_name }}
+                                            </SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                <InputError :message="form.errors.supplier_id" class="mt-2" />
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="grid w-full gap-2">
+                                <Label for="device_model">Model</Label>
+                                <Input id="device_model" v-model="form.device_model" type="text" placeholder="Model"
                                     required />
-                                <InputError :message="form.errors.device_name" class="mt-2" />
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-6">
-                                <div class="grid w-full gap-2">
-                                    <Label for="device_type_id">Type</Label>
-                                    <Select v-model="form.device_type_id">
-                                        <SelectTrigger class="w-full">
-                                            <SelectValue placeholder="Select device type" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectItem v-for="device_type in device_types" :key="device_type.id"
-                                                    :value="device_type.id">
-                                                    {{ device_type.device_type_name }}
-                                                </SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                    <InputError :message="form.errors.device_type_id" class="mt-2" />
-                                </div>
-
-                                <div class="grid w-full gap-2">
-                                    <Label for="status_id">Status</Label>
-                                    <Select v-model="form.status_id">
-                                        <SelectTrigger class="w-full">
-                                            <SelectValue placeholder="Select status" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectItem v-for="status in statuses" :key="status.id"
-                                                    :value="status.id">
-                                                    {{ status.status_name }}
-                                                </SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                    <InputError :message="form.errors.status_id" class="mt-2" />
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-6">
-                                <div class="grid w-full gap-2">
-                                    <Label for="device_serial_number">Serial number</Label>
-                                    <Input id="device_serial_number" v-model="form.device_serial_number" type="text"
-                                        placeholder="Serial number" />
-                                    <InputError :message="form.errors.device_serial_number" class="mt-2" />
-                                </div>
-                                <div class="grid w-full gap-2">
-                                    <Label for="device_property_number">Property number</Label>
-                                    <Input id="device_property_number" v-model="form.device_property_number" type="text"
-                                        placeholder="Property number" />
-                                    <InputError :message="form.errors.device_property_number" class="mt-2" />
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-6">
-                                <div class="grid w-full gap-2">
-                                    <Label for="device_aquisition_cost">Cost</Label>
-                                    <Input id="device_aquisition_cost" v-model="form.device_aquisition_cost"
-                                        type="number" step="0.01" min="0" placeholder="Cost" />
-                                    <InputError :message="form.errors.device_aquisition_cost" class="mt-2" />
-                                </div>
-                                <div class="grid w-full gap-2">
-                                    <Label for="device_delivery_date">Delivery date</Label>
-                                    <Input id="device_delivery_date" v-model="form.device_delivery_date" type="date" />
-                                    <InputError :message="form.errors.device_delivery_date" class="mt-2" />
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-6">
-                                <div class="grid w-full gap-2"></div>
-                                <div class="grid w-full gap-2">
-                                    <Label for="device_warranty_expiration_date">Warranty expiration date</Label>
-                                    <Input id="device_warranty_expiration_date"
-                                        v-model="form.device_warranty_expiration_date" type="date" />
-                                    <InputError :message="form.errors.device_warranty_expiration_date" class="mt-2" />
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-6">
-                                <div class="grid w-full gap-2">
-                                    <Label for="supplier_id">Supplier</Label>
-                                    <Select v-model="form.supplier_id">
-                                        <SelectTrigger class="w-full">
-                                            <SelectValue placeholder="Select supplier" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectItem v-for="supplier in suppliers" :key="supplier.id"
-                                                    :value="supplier.id">
-                                                    {{ supplier.supplier_name }}
-                                                </SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                    <InputError :message="form.errors.supplier_id" class="mt-2" />
-                                </div>
-                                <div class="grid w-full gap-2">
-                                    <Label for="supplier_id">Arrangement</Label>
-                                    <Select v-model="form.arrangement_id">
-                                        <SelectTrigger class="w-full">
-                                            <SelectValue placeholder="Select arrangement" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectItem v-for="arrangement in arrangements" :key="arrangement.id"
-                                                    :value="arrangement.id">
-                                                    {{ arrangement.arrangement_name }}
-                                                </SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                    <InputError :message="form.errors.supplier_id" class="mt-2" />
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-6">
-                                <div class="grid w-full gap-2">
-                                    <Label for="device_model">Model</Label>
-                                    <Input id="device_model" v-model="form.device_model" type="text" placeholder="Model"
-                                        required />
-                                    <InputError :message="form.errors.device_model" class="mt-2" />
-                                </div>
-                                <div class="grid w-full gap-2">
-                                    <Label for="supplier_id">Brand</Label>
-                                    <Select v-model="form.brand_id">
-                                        <SelectTrigger class="w-full">
-                                            <SelectValue placeholder="Select brand" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectItem v-for="brand in brands" :key="brand.id" :value="brand.id">
-                                                    {{ brand.brand_name }}
-                                                </SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                    <InputError :message="form.errors.brand_id" class="mt-2" />
-                                </div>
+                                <InputError :message="form.errors.device_model" class="mt-2" />
                             </div>
                             <div class="grid w-full gap-2">
-                                <Label for="device_description">Description</Label>
-                                <Textarea id="device_description" v-model="form.device_description"
-                                    placeholder="Description" />
-                                <InputError :message="form.errors.device_description" class="mt-2" />
+                                <Label for="supplier_id">Brand</Label>
+                                <Select v-model="form.brand_id">
+                                    <SelectTrigger class="w-full">
+                                        <SelectValue placeholder="Select brand" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectItem v-for="brand in brands" :key="brand.id" :value="brand.id">
+                                                {{ brand.brand_name }}
+                                            </SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                <InputError :message="form.errors.brand_id" class="mt-2" />
                             </div>
+                        </div>
+                        <div class="grid w-full gap-2">
+                            <Label for="device_description">Description</Label>
+                            <Textarea id="device_description" v-model="form.device_description"
+                                placeholder="Description" />
+                            <InputError :message="form.errors.device_description" class="mt-2" />
+                        </div>
+                        <div class="grid w-full gap-2">
+                            <Label for="device_remarks">Remarks</Label>
+                            <Textarea id="device_remarks" v-model="form.device_remarks" placeholder="Remarks" />
+                            <InputError :message="form.errors.device_remarks" class="mt-2" />
+                        </div>
+                        <hr>
+                        <h1 class="text-lg font-semibold mb-5">Deployment details</h1>
+                        <div class="grid grid-cols-2 gap-6">
                             <div class="grid w-full gap-2">
-                                <Label for="device_remarks">Remarks</Label>
-                                <Textarea id="device_remarks" v-model="form.device_remarks" placeholder="Remarks" />
-                                <InputError :message="form.errors.device_remarks" class="mt-2" />
+                                <Label for="user_id">End-user</Label>
+                                <Select v-model="form.end_user_id">
+                                    <SelectTrigger class="w-full">
+                                        <SelectValue placeholder="Select end-user" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectItem v-for="end_user in end_users" :key="end_user.id"
+                                                :value="end_user.id">
+                                                {{ end_user.end_user_name }}
+                                            </SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                <InputError :message="form.errors.end_user_id" class="mt-2" />
                             </div>
-                            <hr>
-                            <h1 class="text-lg font-semibold mb-5">Deployment details</h1>
-                            <div class="grid grid-cols-2 gap-6">
-                                <div class="grid w-full gap-2">
-                                    <Label for="user_id">End-user</Label>
-                                    <Select v-model="form.end_user_id">
-                                        <SelectTrigger class="w-full">
-                                            <SelectValue placeholder="Select end-user" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectItem v-for="end_user in end_users" :key="end_user.id"
-                                                    :value="end_user.id">
-                                                    {{ end_user.end_user_name }}
-                                                </SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                    <InputError :message="form.errors.end_user_id" class="mt-2" />
-                                </div>
 
-                                <div class="grid w-full gap-2">
-                                    <Label for="device_deployment_date">Deployment date</Label>
-                                    <Input id="device_deployment_date" v-model="form.device_deployment_date"
-                                        type="date" />
-                                    <InputError :message="form.errors.device_deployment_date" class="mt-2" />
-                                </div>
+                            <div class="grid w-full gap-2">
+                                <Label for="device_deployment_date">Deployment date</Label>
+                                <Input id="device_deployment_date" v-model="form.device_deployment_date" type="date" />
+                                <InputError :message="form.errors.device_deployment_date" class="mt-2" />
                             </div>
-                            <hr class="mt-10">
-                            <div class="flex justify-between items-center">
-                                <Link :href="route('devices.index')" :class="buttonVariants({ variant: 'outline' })"
-                                    class="w-[120px]">
-                                <span>Cancel</span>
-                                </Link>
-                                <Button variant="default" :disabled="form.processing" class="w-[120px]">Update</Button>
-                            </div>
-                        </form>
+                        </div>
+                        <hr class="mt-10">
+                        <div class="flex justify-between items-center">
+                            <Link :href="route('devices.index')" :class="buttonVariants({ variant: 'outline' })"
+                                class="w-[120px]">
+                            <X />
+                            <span>Cancel</span>
+                            </Link>
+
+                            <!-- Update Button -->
+                            <AlertDialog>
+                                <AlertDialogTrigger>
+                                    <Button variant="default" class="w-[120px]">
+                                        <SaveAll />
+                                        <span>Update</span>
+                                    </Button>
+                                </AlertDialogTrigger>
+
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This action will update the current record.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction @click="updateDevice()">
+                                            Continue
+                                        </AlertDialogAction>
+
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </div>
+                        <!-- </form> -->
                     </CardContent>
                 </Card>
             </div>

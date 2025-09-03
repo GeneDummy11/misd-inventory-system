@@ -8,6 +8,7 @@ import Label from '@/components/ui/label/Label.vue';
 import { Device } from '@/types/devices/device_interface';
 import { formatDate } from '@/utils/format_date';
 import { formatToPHP } from '@/utils/format_currency';
+import { ChevronLeft } from 'lucide-vue-next';
 
 const props = defineProps<{
     device: Device;
@@ -121,6 +122,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <div class="flex justify-between items-center">
                             <Link :href="route('devices.index')" :class="buttonVariants({ variant: 'outline' })"
                                 class="w-[120px]">
+                            <ChevronLeft />
                             <span>Back</span>
                             </Link>
                         </div>
