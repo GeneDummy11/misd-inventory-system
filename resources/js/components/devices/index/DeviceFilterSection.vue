@@ -5,6 +5,7 @@ import { Arrangement, DeviceFilters, DeviceType, Status } from '@/types/devices/
 import { ref, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
 import Button from '@/components/ui/button/Button.vue';
+import Label from '@/components/ui/label/Label.vue';
 
 const props = defineProps<{
     device_types: DeviceType[];
@@ -72,15 +73,17 @@ function resetFilter() {
     <div class="flex justify-between items-center">
         <div class="flex items-center space-x-2">
             <span>
-                <ListFilter />
+                <ListFilter class="mt-3" />
             </span>
             <div>
+                <Label class="text-xs mb-1">Device Type</Label>
                 <Select v-model="selectedDeviceType">
                     <SelectTrigger class="w-[150px]">
                         <SelectValue placeholder="Device Type" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
+                            <SelectItem :value="null">- Select -</SelectItem>
                             <SelectItem v-for="device_type in device_types" :key="device_type.id"
                                 :value="device_type.id">
                                 {{ device_type.device_type_name }}
@@ -90,12 +93,14 @@ function resetFilter() {
                 </Select>
             </div>
             <div>
+                <Label class="text-xs mb-1">Status</Label>
                 <Select v-model="selectedStatus">
                     <SelectTrigger class="w-[150px]">
                         <SelectValue placeholder="Status" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
+                            <SelectItem :value="null">- Select -</SelectItem>
                             <SelectItem v-for="status in statuses" :key="status.id" :value="status.id">
                                 {{ status.status_name }}
                             </SelectItem>
@@ -104,12 +109,14 @@ function resetFilter() {
                 </Select>
             </div>
             <div>
+                <Label class="text-xs mb-1">Arrangement</Label>
                 <Select v-model="selectedArrangement">
                     <SelectTrigger class="w-[150px]">
                         <SelectValue placeholder="Arrangement" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
+                            <SelectItem :value="null">- Select -</SelectItem>
                             <SelectItem v-for="arrangement in arrangements" :key="arrangement.id"
                                 :value="arrangement.id">
                                 {{ arrangement.arrangement_name }}
@@ -119,12 +126,14 @@ function resetFilter() {
                 </Select>
             </div>
             <div>
+                <Label class="text-xs mb-1">Warranty</Label>
                 <Select v-model="selectedWarrantyStatus">
                     <SelectTrigger class="w-[150px]">
                         <SelectValue placeholder="Warranty" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
+                            <SelectItem :value="null">- Select -</SelectItem>
                             <SelectItem value="Expired">Expired</SelectItem>
                             <SelectItem value="Expiring Soon">Expiring Soon</SelectItem>
                             <SelectItem value="Active">Active</SelectItem>
@@ -133,7 +142,7 @@ function resetFilter() {
                 </Select>
             </div>
         </div>
-        <div class="flex items-center space-x-2">
+        <div class="flex items-center space-x-2 mt-5">
             <div
                 class="w-[400px] relative flex items-center h-10 rounded-md border border-input bg-white dark:bg-black pl-3 pr-3 text-sm ring-offset-background focus-within:ring-1 focus-within:ring-ring focus-within:ring-offset-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-muted-foreground mr-2" fill="none"
