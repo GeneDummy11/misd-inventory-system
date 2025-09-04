@@ -32,7 +32,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
             <DeviceTitleSection />
             <DeviceFilterSection :device_types="device_types" :arrangements="arrangements" :statuses="statuses" />
-            <DeviceTableSection :devices="devices" />
+            <DeviceTableSection :devices="devices" :statuses="statuses" :end_users="end_users" />
             <Paginator :links="devices.links" :meta="{
                 from: devices.from,
                 to: devices.to,

@@ -2,14 +2,14 @@
 import { Eye, HandHelping, Pencil, SaveAll, Trash2, X } from 'lucide-vue-next';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import Button from '@/components/ui/button/Button.vue';
-import { PaginatedItemsResponse, Device } from '@/types/devices/device_interface';
+import { PaginatedItemsResponse, Device, Status, EndUser } from '@/types/devices/device_interface';
 import { getWarrantyStatus } from '@/utils/format_warranty';
 import { type WarrantyStatus } from '@/utils/format_warranty';
 import { formatDate } from '@/utils/format_date';
 import { computed } from 'vue';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { buttonVariants } from '@/components/ui/button';
-import { Link, router } from '@inertiajs/vue3';
+import { Link, router, useForm } from '@inertiajs/vue3';
 import { toast } from 'vue-sonner';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, } from '@/components/ui/alert-dialog';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, } from '@/components/ui/dialog';
@@ -18,7 +18,11 @@ import Textarea from '@/components/ui/textarea/Textarea.vue';
 
 const props = defineProps<{
     devices: PaginatedItemsResponse;
+    statuses: Status[];
+    end_users: EndUser[];
 }>();
+
+console.log(props.statuses);
 
 //Delcaration for warranty status process
 type DeviceWithWarrantyStatus = Device & {
@@ -39,6 +43,12 @@ function deleteDevice(deviceId: number) {
         onError: () => toast.error('Failed to delete device.'),
     });
 };
+
+const form = useForm({
+    end_user_id: '',
+    device_deployment_date: '',
+    status_id: '',
+});
 
 </script>
 
@@ -104,33 +114,47 @@ function deleteDevice(deviceId: number) {
                                     <!-- Centered parent container -->
                                     <div class="flex flex-col items-center space-y-4">
                                         <div class="flex flex-col w-full max-w-sm">
-                                            <Label class="mb-2 text-xs">Device status</Label>
-                                            <Select>
+                                            <Label class="mb-2 text-xs" for="status_id">Status</Label>
+                                            <Select v-model="form.status_id">
                                                 <SelectTrigger class="w-full">
-                                                    <SelectValue placeholder="Select a fruit" />
+                                                    <SelectValue placeholder="Select status" />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectGroup>
-                                                        <SelectLabel>Fruits</SelectLabel>
-                                                        <SelectItem value="apple">Apple</SelectItem>
+                                                        <SelectItem v-for="status in statuses" :key="status.id"
+                                                            :value="status.id">
+                                                            {{ status.status_name }}
+                                                        </SelectItem>
                                                     </SelectGroup>
                                                 </SelectContent>
                                             </Select>
+                                            <InputError :message="form.errors.status_id" class="mt-2" />
                                         </div>
 
                                         <div class="flex flex-col w-full max-w-sm">
-                                            <Label class="mb-2 text-xs">End-user</Label>
-                                            <Select>
+                                            <Label class="mb-2 text-xs" for="user_id">End-user</Label>
+                                            <Select v-model="form.end_user_id">
                                                 <SelectTrigger class="w-full">
-                                                    <SelectValue placeholder="Select a fruit" />
+                                                    <SelectValue placeholder="Select end-user" />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectGroup>
-                                                        <SelectLabel>Fruits</SelectLabel>
-                                                        <SelectItem value="apple">Apple</SelectItem>
+                                                        <SelectItem v-for="end_user in end_users" :key="end_user.id"
+                                                            :value="end_user.id">
+                                                            {{ end_user.end_user_name }}
+                                                        </SelectItem>
                                                     </SelectGroup>
                                                 </SelectContent>
                                             </Select>
+                                            <InputError :message="form.errors.end_user_id" class="mt-2" />
+                                        </div>
+
+                                        <div class="flex flex-col w-full max-w-sm">
+                                            <Label class="mb-2 text-xs" for="device_deployment_date">Deployment
+                                                date</Label>
+                                            <Input id="device_deployment_date" v-model="form.device_deployment_date"
+                                                type="date" />
+                                            <InputError :message="form.errors.device_deployment_date" class="mt-2" />
                                         </div>
 
                                         <div class="flex flex-col w-full max-w-sm">
@@ -139,27 +163,14 @@ function deleteDevice(deviceId: number) {
                                         </div>
                                     </div>
 
-                                    <DialogFooter>
-                                        <div class="flex justify-between w-full">
-                                            <div>
-                                                <Link :href="route('devices.show', { device: device })"
-                                                    :class="buttonVariants({ variant: 'outline' })" class="text-xs">
-                                                <span>
-                                                    <X />
-                                                </span>
-                                                Cancel
-                                                </Link>
-                                            </div>
-                                            <div>
-                                                <Link :href="route('devices.show', { device: device })"
-                                                    :class="buttonVariants({ variant: 'default' })" class="text-xs">
-                                                <span>
-                                                    <SaveAll />
-                                                </span>
-                                                Update
-                                                </Link>
-                                            </div>
-                                        </div>
+                                    <DialogFooter class="px-10">
+                                        <Link :href="route('devices.show', { device: device })"
+                                            :class="buttonVariants({ variant: 'default' })" class="text-xs">
+                                        <span>
+                                            <SaveAll />
+                                        </span>
+                                        Update
+                                        </Link>
                                     </DialogFooter>
                                 </DialogContent>
                             </Dialog>

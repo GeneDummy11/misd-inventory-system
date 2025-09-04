@@ -117,12 +117,20 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <div class="grid grid-cols-3 gap-6">
                             <div class="grid w-full gap-2">
                                 <Label class="text-gray-500">End-User</Label>
-                                <Label class="text-md">{{ device.end_user.end_user_name }}</Label>
+                                <Label class="text-md">{{ device.end_user?.end_user_name ?? 'N/A' }}</Label>
                             </div>
 
                             <div class="grid w-full gap-2">
                                 <Label class="text-gray-500">Deployment date</Label>
-                                <Label class="text-md">{{ formatDate(device.device_deployment_date) }}</Label>
+                                <Label class="text-md">
+                                    <div
+                                        v-if="device.device_deployment_date && device.device_deployment_date !== '1970-01-01'">
+                                        {{ formatDate(device.device_deployment_date) }}
+                                    </div>
+                                    <div v-else>
+                                        N/A
+                                    </div>
+                                </Label>
                             </div>
                         </div>
                         <hr class="mt-10 mb-5">
