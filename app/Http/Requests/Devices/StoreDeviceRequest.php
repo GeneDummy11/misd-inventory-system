@@ -60,7 +60,7 @@ class StoreDeviceRequest extends FormRequest
             'end_user_id' => 'end-user',
             'device_type_id' => 'type',
             'brand_id' => 'brand',
-            'status_id' => 'status',
+            'status_id' => 'deployment status',
             'supplier_id' => 'supplier',
             'arrangement_id' => 'arrangement',
         ];

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Devices\StoreDeviceRequest;
 use App\Http\Requests\Devices\UpdateDeviceRequest;
+use App\Http\Requests\Devices\UpdateDeviceStatusRequest;
 use App\Models\Arrangement;
 use App\Models\Brand;
 use App\Models\Device;
@@ -177,5 +178,12 @@ class DeviceController extends Controller
         $device->delete();
 
         return redirect()->route('devices.index')->with('success', 'Device deleted successfully.');
+    }
+
+    public function updateDeviceStatus(UpdateDeviceStatusRequest $request, Device $device)
+    {
+        $device->update($request->validated());
+
+        return redirect()->route('devices.index')->with('success', 'Device updated successfully.');
     }
 }
