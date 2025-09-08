@@ -186,4 +186,9 @@ class DeviceController extends Controller
 
         return redirect()->route('devices.index')->with('success', 'Device updated successfully.');
     }
+
+    public function import()
+    {
+        return Inertia::render('devices/Import');
+    }
 }

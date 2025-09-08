@@ -14,18 +14,23 @@ import Button from '@/components/ui/button/Button.vue';
             </h1>
         </div>
         <div class="space-x-2">
+            <!-- Add new device button -->
             <Link :href="route('devices.create')" :class="buttonVariants({ variant: 'default' })" class="text-xs">
             <span>
                 <Plus />
             </span>
             Add new device
             </Link>
-            <Button class="text-xs">
-                <span>
-                    <FileUp />
-                </span>
-                Import
-            </Button>
+
+            <!-- Import button -->
+            <Link :href="route('devices.import')" :class="buttonVariants({ variant: 'default' })" class="text-xs">
+            <span>
+                <FileUp />
+            </span>
+            Import
+            </Link>
+
+            <!-- Export button -->
             <Button class="text-xs">
                 <span>
                     <Download />
