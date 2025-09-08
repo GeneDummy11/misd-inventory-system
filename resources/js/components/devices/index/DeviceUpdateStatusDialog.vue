@@ -13,12 +13,13 @@ import { EndUser, Status } from '@/types/devices/device_interface';
 import Button from '@/components/ui/button/Button.vue';
 
 const props = defineProps<{
-    end_user_id: number;
+    end_user_id?: number;
     device_id: number;
     status_id: number;
-    device_deployment_date: string;
+    device_deployment_date?: string;
     statuses: Status[];
     end_users: EndUser[];
+    disabled?: boolean
 }>();
 
 const form = useForm<{
@@ -37,8 +38,9 @@ function updateDeviceStatus(deviceId: number) {
     form.put(route('devices.update-device-status', { device: deviceId }), {
         preserveScroll: true,
         onSuccess: () => {
-            form.reset(),
-                toast.success('Device status updated successfully.')
+            form.reset();
+            toast.success('Device status updated successfully.');
+            isDialogOpen.value = false;
         },
         onError: (errors) => console.error(errors),
     });
@@ -48,7 +50,7 @@ function updateDeviceStatus(deviceId: number) {
 
 <template>
     <Dialog :open="isDialogOpen" @update:open="(val: boolean) => isDialogOpen = val">
-        <DialogTrigger as-child>
+        <DialogTrigger as-child :disabled="disabled">
             <Button class="w-[130px] text-xs">
                 <span>
                     <HandHelping />

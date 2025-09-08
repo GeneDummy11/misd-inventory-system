@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { Eye, Pencil, Trash2, X } from 'lucide-vue-next';
+import { Eye, Pencil } from 'lucide-vue-next';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import Button from '@/components/ui/button/Button.vue';
 import { PaginatedItemsResponse, Device, Status, EndUser } from '@/types/devices/device_interface';
 import { getWarrantyStatus } from '@/utils/format_warranty';
 import { type WarrantyStatus } from '@/utils/format_warranty';
@@ -9,15 +8,15 @@ import { formatDate } from '@/utils/format_date';
 import { computed } from 'vue';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { buttonVariants } from '@/components/ui/button';
-import { Link, router } from '@inertiajs/vue3';
-import { toast } from 'vue-sonner';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, } from '@/components/ui/alert-dialog';
+import { Link } from '@inertiajs/vue3';
 import DeviceUpdateStatusDialog from '@/components/devices/index/DeviceUpdateStatusDialog.vue';
+import DeviceDeleteButton from '@/components/devices/index/DeviceDeleteButton.vue';
 
 const props = defineProps<{
     devices: PaginatedItemsResponse;
     statuses: Status[];
     end_users: EndUser[];
+    disabled?: boolean;
 }>();
 
 //Delcaration for warranty status process
@@ -30,16 +29,7 @@ const mappedDevices = computed<DeviceWithWarrantyStatus[]>(() =>
         ...device,
         warrantyStatus: getWarrantyStatus(device.device_warranty_expiration_date)
     }))
-)
-
-function deleteDevice(deviceId: number) {
-    router.delete(route('devices.destroy', { device: deviceId }), {
-        preserveScroll: true,
-        onSuccess: () => toast.success('Device deleted successfully.'),
-        onError: () => toast.error('Failed to delete device.'),
-    });
-};
-
+);
 </script>
 
 <template>
@@ -86,7 +76,8 @@ function deleteDevice(deviceId: number) {
                     <!-- Deploy Button -->
                     <DeviceUpdateStatusDialog :end_user_id="device.end_user_id"
                         :device_deployment_date="device.device_deployment_date" :status_id="device.status_id"
-                        :statuses="statuses" :end_users="end_users" :device_id="device.id" />
+                        :statuses="statuses" :end_users="end_users" :device_id="device.id"
+                        :disabled="device.status_id === 2" />
 
                     <!-- Show Button -->
                     <Link :href="route('devices.show', { device: device })"
@@ -107,48 +98,7 @@ function deleteDevice(deviceId: number) {
                     </Link>
 
                     <!-- Delete Button -->
-                    <AlertDialog>
-                        <AlertDialogTrigger>
-                            <Button variant="destructive" class="w-[85px] text-xs">
-                                <span>
-                                    <Trash2 />
-                                </span>
-                                Delete
-                            </Button>
-                        </AlertDialogTrigger>
-
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    This action cannot be undone. This will permanently delete the
-                                    device and
-                                    remove its data.
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <div class="flex justify-between w-full">
-                                    <div>
-                                        <AlertDialogCancel>
-                                            <span>
-                                                <X />
-                                            </span>
-                                            Cancel
-                                        </AlertDialogCancel>
-                                    </div>
-                                    <div>
-                                        <AlertDialogAction @click="deleteDevice(device.id)"
-                                            :class="buttonVariants({ variant: 'destructive' })">
-                                            <span>
-                                                <Trash2 />
-                                            </span>
-                                            Delete
-                                        </AlertDialogAction>
-                                    </div>
-                                </div>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
+                    <DeviceDeleteButton :device_id="device.id" />
                 </TableCell>
             </TableRow>
         </TableBody>
