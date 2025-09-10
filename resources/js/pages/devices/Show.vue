@@ -73,7 +73,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <div class="grid grid-cols-3 gap-6 mb-2">
                             <div class="grid w-full gap-2">
                                 <Label class="text-gray-500">Cost</Label>
-                                <Label class="text-md">{{ formatToPHP(device.device_aquisition_cost) }}</Label>
+                                <Label class="text-md">{{ formatToPHP(device.device_acquisition_cost) }}</Label>
                             </div>
                             <div class="grid w-full gap-2">
                                 <Label class="text-gray-500">Delivery date</Label>

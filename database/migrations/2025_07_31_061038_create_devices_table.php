@@ -16,11 +16,11 @@ return new class extends Migration
             $table->string('device_name');
             $table->string('device_model')->nullable();
             $table->text('device_description')->nullable();
-            $table->string('device_serial_number');
-            $table->string('device_property_number');
+            $table->string('device_serial_number')->unique();
+            $table->string('device_property_number')->unique();
             $table->date('device_delivery_date');
             $table->date('device_warranty_expiration_date');
-            $table->float('device_aquisition_cost');
+            $table->float('device_acquisition_cost');
             $table->text('device_remarks')->nullable();
             $table->date('device_deployment_date')->nullable();
             $table->foreignId('end_user_id')->nullable()->constrained()->onDelete('cascade');
@@ -30,6 +30,12 @@ return new class extends Migration
             $table->foreignId('supplier_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('arrangement_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
+            $table->index('end_user_id');
+            $table->index('device_type_id');
+            $table->index('brand_id');
+            $table->index('supplier_id');
+            $table->index('status_id');
+            $table->index('arrangement_id');
         });
     }
 

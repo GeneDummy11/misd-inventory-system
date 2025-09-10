@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Devices\StoreDeviceRequest;
 use App\Http\Requests\Devices\UpdateDeviceRequest;
 use App\Http\Requests\Devices\UpdateDeviceStatusRequest;
+use App\Imports\Devices\DevicesImport;
 use App\Models\Arrangement;
 use App\Models\Brand;
 use App\Models\Device;
@@ -14,6 +15,8 @@ use App\Models\Status;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\HeadingRowImport;
 
 class DeviceController extends Controller
 {
@@ -128,7 +131,7 @@ class DeviceController extends Controller
             'device_description' => $request->device_description,
             'device_serial_number' => $request->device_serial_number,
             'device_property_number' => $request->device_property_number,
-            'device_aquisition_cost' => $request->device_aquisition_cost,
+            'device_acquisition_cost' => $request->device_acquisition_cost,
             'device_remarks' => $request->device_remarks,
             'device_delivery_date' => $request->device_delivery_date,
             'device_warranty_expiration_date' => $request->device_warranty_expiration_date,
@@ -190,5 +193,95 @@ class DeviceController extends Controller
     public function import()
     {
         return Inertia::render('devices/Import');
+    }
+
+    public function storeImport(Request $request)
+    {
+        $expectedHeaders = [
+            'device_name',
+            'device_model',
+            'device_description',
+            'device_serial_number',
+            'device_property_number',
+            'device_delivery_date',
+            'device_warranty_expiration_date',
+            'device_acquisition_cost',
+            'device_remarks',
+            'device_deployment_date',
+            'end_user_id',
+            'device_type_id',
+            'brand_id',
+            'status_id',
+            'supplier_id',
+            'arrangement_id',
+        ];
+
+        $request->validate([
+            'file' => 'required|file',
+        ]);
+
+        $file = $request->file('file');
+
+        // dd((new HeadingRowImport)->toArray($file));
+
+        // Get MIME type
+        $mimeType = $file->getMimeType(); // e.g., "text/csv"
+
+        // Get original extension
+        $extension = $file->getClientOriginalExtension(); // e.g., "csv"
+
+        // Get original name
+        $originalName = $file->getClientOriginalName();
+
+        // Extension manual check
+        if (!in_array($extension, ['csv', 'xlsx', 'xls'])) {
+            return back()->withErrors(['file' => 'Unsupported file type: ' . $extension]);
+        }
+
+        $extension = strtolower($file->getClientOriginalExtension());
+
+        $allowedExtensions = ['csv'];
+
+        if (!in_array($extension, $allowedExtensions)) {
+            return back()->withErrors(['file' => 'Unsupported file extension: ' . $extension]);
+        }
+
+        // Validate headers
+        $raw = (new HeadingRowImport)->toArray($file);
+        $actualHeaders = array_values($raw[0][0] ?? []);
+        $missingHeaders = array_diff($expectedHeaders, $actualHeaders);
+        $unexpectedHeaders = array_diff($actualHeaders, $expectedHeaders);
+
+        $suggestions = collect($unexpectedHeaders)->map(function ($header) use ($expectedHeaders) {
+            $closest = collect($expectedHeaders)->first(function ($expected) use ($header) {
+                return levenshtein($header, $expected) <= 3;
+            });
+
+            return $closest ? "$header should be $closest" : $header;
+        })->all();
+
+        if ($missingHeaders || $unexpectedHeaders) {
+            return back()->withErrors([
+                'file' => '<strong>Missing header/s:</strong><br><ul style="list-style-type: disc; padding-left: 20px;">' .
+                    implode('', array_map(fn($h) => "<li>$h</li>", $missingHeaders)) .
+                    '</ul><br>' .
+                    '<strong>Suggestion/s:</strong><br><ul style="list-style-type: disc; padding-left: 20px;">' .
+                    implode('', array_map(fn($h) => "<li>$h</li>", $suggestions)) .
+                    '</ul>'
+            ]);
+        }
+
+        $import = new DevicesImport;
+        Excel::import($import, $request->file('file'));
+
+        if ($import->failures()->isNotEmpty()) {
+            $summary = $import->failures()->map(function ($failure) {
+                return "Row {$failure->row()}: " . implode(', ', $failure->errors());
+            })->implode('<br>');
+
+            return back()->withErrors([
+                'file' => "Import completed with {$import->failures()->count()} error(s):<br>" . $summary
+            ]);
+        }
     }
 }

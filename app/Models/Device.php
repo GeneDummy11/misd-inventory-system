@@ -17,7 +17,7 @@ class Device extends Model
         'device_property_number',
         'device_delivery_date',
         'device_warranty_expiration_date',
-        'device_aquisition_cost',
+        'device_acquisition_cost',
         'device_remarks',
         'device_deployment_date',
         'end_user_id',

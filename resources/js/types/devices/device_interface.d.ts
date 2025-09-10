@@ -6,7 +6,7 @@ export interface Device {
     device_serial_number: string;
     device_property_number: string;
     device_delivery_date: string;
-    device_aquisition_cost: number;
+    device_acquisition_cost: number;
     device_remarks: string;
     device_deployment_date: string;
     device_warranty_expiration_date: string;

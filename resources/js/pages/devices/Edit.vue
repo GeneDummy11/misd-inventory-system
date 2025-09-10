@@ -32,7 +32,7 @@ const form = useForm({
     device_serial_number: props.device?.device_serial_number ?? '',
     device_property_number: props.device?.device_property_number ?? '',
     device_delivery_date: props.device?.device_delivery_date ?? '',
-    device_aquisition_cost: props.device?.device_aquisition_cost ?? '',
+    device_acquisition_cost: props.device?.device_acquisition_cost ?? '',
     device_remarks: props.device?.device_remarks ?? '',
     device_deployment_date: props.device?.device_deployment_date ?? '',
     device_warranty_expiration_date: props.device?.device_warranty_expiration_date ?? '',
@@ -145,10 +145,10 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                         <div class="grid grid-cols-2 gap-6">
                             <div class="grid w-full gap-2">
-                                <Label for="device_aquisition_cost">Cost</Label>
-                                <Input id="device_aquisition_cost" v-model="form.device_aquisition_cost" type="number"
+                                <Label for="device_acquisition_cost">Cost</Label>
+                                <Input id="device_acquisition_cost" v-model="form.device_acquisition_cost" type="number"
                                     step="0.01" min="0" placeholder="Cost" />
-                                <InputError :message="form.errors.device_aquisition_cost" class="mt-2" />
+                                <InputError :message="form.errors.device_acquisition_cost" class="mt-2" />
                             </div>
                             <div class="grid w-full gap-2">
                                 <Label for="device_delivery_date">Delivery date</Label>
