@@ -4,7 +4,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/vue3';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Label from '@/components/ui/label/Label.vue';
-import { FileUp, SaveAll, X } from 'lucide-vue-next';
+import { Download, FileUp, SaveAll, X } from 'lucide-vue-next';
 import { buttonVariants } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, } from '@/components/ui/alert-dialog';
 import Button from '@/components/ui/button/Button.vue';
@@ -66,11 +66,22 @@ function handleFileChange(e: Event) {
     const target = e.target as HTMLInputElement;
     const selectedFile = target.files?.[0] ?? null;
 
+    //Check if a file is selected
     if (!selectedFile) {
         errorMessage.value = 'No file selected.';
         file.value = null;
         previewData.value = [];
         parsed.value = false;
+        return;
+    }
+
+    //Check file type
+    if (selectedFile.type !== 'text/csv' && !selectedFile.name.endsWith('.csv')) {
+        errorMessage.value = 'Only CSV files are allowed.';
+        file.value = null;
+        previewData.value = [];
+        parsed.value = false;
+        target.value = '';
         return;
     }
 
@@ -89,6 +100,7 @@ function handleFileChange(e: Event) {
         }
     });
 }
+
 
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -114,15 +126,27 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <Card>
                     <CardHeader>
                         <CardTitle>
-                            <div class="flex space-x-2 items-center">
-                                <FileUp />
-                                <Label class="text-2xl font-bold">Import record/s from a csv file</Label>
+                            <div class="flex space-x-2 items-center justify-between">
+                                <div class="flex items-center">
+                                    <FileUp />
+                                    <Label class=" text-2xl font-bold ml-2">Import record/s from a csv file</Label>
+                                </div>
+                                <div class="flex items-center">
+                                    <!-- Export button -->
+                                    <a :href="route('devices.download-device-import-template')"
+                                        :class="buttonVariants({ variant: 'default' })" class="text-xs">
+                                        <span>
+                                            <Download />
+                                        </span>
+                                        Download template
+                                    </a>
+                                </div>
                             </div>
                         </CardTitle>
                     </CardHeader>
                     <CardContent class="space-y-5">
                         <!-- File input -->
-                        <Input type="file" name="file" accept=".csv, .xlsx, .xls" @change="handleFileChange" />
+                        <Input type="file" name="file" accept=".csv" @change="handleFileChange" />
 
                         <!-- Errors -->
                         <div v-if="errorMessage" class="text-red-500 text-sm mt-2" v-html="errorMessage"></div>

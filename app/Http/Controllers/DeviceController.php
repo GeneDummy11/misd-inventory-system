@@ -17,6 +17,8 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\HeadingRowImport;
+use App\Exports\Devices\DevicesTemplateExport;
+
 
 class DeviceController extends Controller
 {
@@ -283,5 +285,10 @@ class DeviceController extends Controller
                 'file' => "Import completed with {$import->failures()->count()} error(s):<br>" . $summary
             ]);
         }
+    }
+
+    public function downloadDeviceImportTemplate()
+    {
+        return Excel::download(new DevicesTemplateExport, 'device_template.csv');
     }
 }

@@ -35,6 +35,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('devices/{device}/update-device-status', [DeviceController::class, 'updateDeviceStatus'])->name('devices.update-device-status');
     Route::get('devices/import', [DeviceController::class, 'import'])->name('devices.import');
     Route::post('devices/import', [DeviceController::class, 'storeImport'])->name('devices.store-import');
+    Route::get('/devices/download-device-import-template', [DeviceController::class, 'downloadDeviceImportTemplate'])->name('devices.download-device-import-template');
 
     //Licenses routes
     Route::get('licenses', [LicenseController::class, 'index'])->name('licenses.index');
